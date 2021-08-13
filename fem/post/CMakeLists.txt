@@ -18,8 +18,19 @@ SET(CMAKE_SWIG_FLAGS "")
 SET_SOURCE_FILES_PROPERTIES(create_disp_dat.i PROPERTIES SWIG_FLAGS "-includeall" SWIG_MODULE_NAME create_disp_dat.so)
 SWIG_ADD_LIBRARY(create_disp_dat LANGUAGE python TYPE MODULE SOURCES create_disp_dat.i create_disp_dat.c)
 SWIG_LINK_LIBRARIES(create_disp_dat ${PYTHON_LIBRARIES})
+install(TARGETS _create_disp_dat LIBRARY DESTINATION fem/post/create_disp_dat)
+add_custom_command(
+        TARGET _create_disp_dat POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+                ${CMAKE_CURRENT_BINARY_DIR}/create_disp_dat.py
+                ${CMAKE_CURRENT_SOURCE_DIR}/create_disp_dat.py)
+add_custom_command(
+        TARGET _create_disp_dat POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+                ${CMAKE_CURRENT_BINARY_DIR}/_create_disp_dat.so
+                ${CMAKE_CURRENT_SOURCE_DIR}/_create_disp_dat.so)
 
-add_executable(create_disp_dat ${SOURCE_FILES})
+# add_executable(create_disp_dat ${SOURCE_FILES})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(SCALE_DISP_DAT_SOURCE_FILES scale_disp_dat.cpp)
